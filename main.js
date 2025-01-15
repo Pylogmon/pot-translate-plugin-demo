@@ -1,28 +1,52 @@
+// main.js
 async function translate(text, from, to, options) {
     const { config, utils } = options;
     const { tauriFetch: fetch } = utils;
     let { requestPath: url } = config;
-    let plain_text = text.replaceAll("/", "@@");
-    let encode_text = encodeURIComponent(plain_text);
-    if (url === undefined || url.length === 0) {
-        url = "lingva.pot-app.com"
+
+    // 设置默认URL
+    if (!url || url.trim().length === 0) {
+        url = "https://trtrc.net/Mirai.php";
     }
+
+    // 确保URL格式正确
     if (!url.startsWith("http")) {
         url = `https://${url}`;
     }
-    const res = await fetch(`${url}/api/v1/${from}/${to}/${encode_text}`, {
-        method: 'GET',
-    });
 
-    if (res.ok) {
-        let result = res.data;
-        const { translation } = result;
-        if (translation) {
-            return translation.replaceAll("@@", "/");;
+    // 准备请求数据
+    const requestData = {
+        source_lang: from,
+        target_lang: to,
+        text: text
+    };
+
+    try {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        });
+
+        if (res.ok) {
+            const result = res.data;
+            if (result && result.translated_text) {
+                return result.translated_text;
+            } else {
+                throw new Error('Translation result is empty');
+            }
         } else {
-            throw JSON.stringify(result.trim());
+            throw new Error(`HTTP Error: ${res.status}`);
         }
-    } else {
-        throw `Http Request Error\nHttp Status: ${res.status}\n${JSON.stringify(res.data)}`;
+    } catch (error) {
+        console.error('Translation error:', error);
+        throw error;
     }
 }
+
+// 导出翻译函数
+module.exports = {
+    translate
+};
