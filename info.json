@@ -1,10 +1,15 @@
 {
-  "id": "plugin.com.pot-app.mirai",
+  "id": "plugin.com.pot-Mirai", 
   "plugin_type": "translate",
-  "icon": "mirai.svg",
-  "display": "mirai",
+  "icon": "Mirai.svg",
+  "display": "Mirai",
   "homepage": "https://github.com/qza666/pot-app-translate-plugin-mirai",
-  "needs": [{ "key": "requestPath", "display": "https://trtrc.net/mirai.php" }],
+  "needs": [
+    {
+      "key": "requestPath",
+      "display": "https://trtrc.net/Mirai.php"
+    }
+  ],
   "language": {
     "auto": "auto",
     "zh_cn": "zh",
